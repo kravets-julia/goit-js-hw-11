@@ -13,7 +13,7 @@ export default class PixApiService{
 
 
     getSearch(){
-        const URL = `https://pixabay.com/api/?key=33829392-49d1eab567acddcf43bdfe9f1&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40`;
+        const URL = `https://pixabay.com/api/?key=33829392-49d1eab567acddcf43bdfe9f1&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${this.page}`;
 
         return fetch(URL).then(response => {
             if (!response.ok) {
@@ -21,10 +21,9 @@ export default class PixApiService{
                  }
           return response.json()  
            })
-        //    .then(({hits}) => {this.nextPage();
-        //    return hits})
-           
-        }
+           .then((hits) => {this.nextPage();
+           return hits})
+                   }
 
             nextPage(){
                 this.page += 1

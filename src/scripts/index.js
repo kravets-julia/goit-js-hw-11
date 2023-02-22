@@ -5,11 +5,14 @@ const formEl = document.getElementById('search-form')
 console.log(formEl)
 const galleryEl = document.querySelector('.gallery')
 console.log(galleryEl)
+const loadMore = document.querySelector('.load-more')
+console.log(loadMore)
 
 const pixApiService = new PixApiService();
 console.log(pixApiService)
 
 formEl.addEventListener('submit', onSubmtFormSearch)
+loadMore.addEventListener('click', onLoadMore)
 
 
 function onSubmtFormSearch(e) {
@@ -19,7 +22,8 @@ e.preventDefault()
     const value = form.elements.searchQuery.value.trim()
     pixApiService.searchQuery = value
 
-    
+pixApiService. resetPage();
+clearGallery();
 
     if (!value){
       return
@@ -33,8 +37,12 @@ else
       {newMarkup(hits);
     }})
     .catch(error => console.log(error)).finally(()=> form.reset())
+}
 
-   
+function onLoadMore (){
+  return pixApiService.getSearch()
+    .then(({hits}) => newMarkup(hits))
+    .catch(error => console.log(error))
 }
 
 let markup=''
@@ -52,7 +60,7 @@ function createCard (hits){
   markup = hits
   .reduce((markup, hits) => 
 createMarkup(hits) + markup, " ");
-galleryEl.innerHTML = markup;
+galleryEl.insertAdjacentHTML('beforeend', markup);
 }
 
 
