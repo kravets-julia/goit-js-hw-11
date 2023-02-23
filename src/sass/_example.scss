@@ -1,19 +1,42 @@
-.search-form{
-  text-align: center;
+body{
+  padding: 10px;
+}
+img {
+  display: block;
+  max-width: 100%;
 }
 
+.form-fixed{
+  position: fixed;
+  background-color: blue;
+  padding: 15px;
+  width: 100%;
+  height: 50px;
+  top: 0; 
+  left:0; 
+}
+
+.search-form{
+    position: fixed;
+  top: 15px;
+  left: 50%;
+}
 
 .gallery{
   display: flex;
   flex-wrap: wrap;
   gap: 15px;
   margin-top: 15px;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1140px;
+  
 }
 
 .info{
   padding-left: 5px;
   padding-right: 5px;
-  font-size: 8px;
+  font-size: 10px;
   display: flex;
   text-align: center;
   justify-content: center;
@@ -25,14 +48,22 @@
   border: 1px solid grey;
   width: calc((100% - 90px) / 4);
   overflow: hidden;
+  object-fit: cover;
+  // position: relative;
+  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2),
+    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
 }
 
   .card-img{
-    width: 100%;
-    height: 90px;
     border: none;
     margin: 0;
     padding: 0;
+ }
+
+  .img{
+    object-fit: cover;
+    height: 120px;
+    width: 100%;
   }
   
   .load-more{
@@ -47,7 +78,7 @@
   }
 
   .hidden {
-    position: absolute;
+    // position: absolute;
     width: 1px;
     height: 1px;
     margin: -1px;
@@ -59,3 +90,4 @@
     clip: rect(0 0 0 0);
     overflow: hidden;
   }
+

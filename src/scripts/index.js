@@ -1,6 +1,8 @@
 import PixApiService from "./apiService";
 import LoadMoreBtn from "./loadMoreBtn";
 import Notiflix, {Notify} from "notiflix";
+import SimpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
 
 const formEl = document.getElementById('search-form')
 console.log(formEl)
@@ -15,6 +17,12 @@ const loadMoreBtn = new LoadMoreBtn({
   selector: '.load-more',
   isHidden: true
 });
+
+let gallery = new SimpleLightbox('.gallery a', {
+ });
+
+
+
 console.log(loadMoreBtn)
 
 console.log(pixApiService)
@@ -29,32 +37,55 @@ e.preventDefault()
     const form = e.currentTarget;
     const value = form.elements.searchQuery.value.trim()
     pixApiService.searchQuery = value
-
+// gallery.open()
 pixApiService. resetPage();
 clearGallery();
-loadMoreBtn.show()
+
     if (!value){
-      return
-    }
+      return  }
 
     return pixApiService.getSearch(value)
-    .then(({hits}) => {
+    .then(({hits, totalHits}) => {
       if (hits.length === 0)
-      {Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')}
-else
-      {newMarkup(hits);
-    }})
+      { Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+    loadMoreBtn.hide()  
+  return}
+  
+      else 
+      { newMarkup(hits);
+        smoothPageScrolling ();
+         Notiflix.Notify.info(`Hooray! We found ${totalHits} images.`)
+        
+        //  if (`${hits.length} * ${pixApiService.page}) === ${totalHits.length}`) 
+         if (`${hits.length}`< 40)
+        {
+          Notiflix.Notify.info("We're sorry, but you've reached the end of search results.")
+          loadMoreBtn.hide();
+        return}
+        else
+          loadMoreBtn.show() }   })
     .catch(error => console.log(error)).finally(()=> form.reset())
 
   }
 
-function onLoadMore (){
+
+async function onLoadMore (){
   loadMoreBtn.disable()
-  return pixApiService.getSearch(pixApiService.searchQuery)
-    .then(({hits}) => {newMarkup(hits);
-  
-    })
-    .catch(error => console.log(error))
+ try {return pixApiService.getSearch(pixApiService.searchQuery)
+    .then(({hits, totalHits}) => {
+      newMarkup(hits);
+      smoothPageScrolling ();
+      if (`${hits.length}`< 40)
+      {
+        Notiflix.Notify.info("We're sorry, but you've reached the end of search results.")
+        loadMoreBtn.hide();
+      return}
+      else
+        loadMoreBtn.show() ;
+  console.log(totalHits);
+    })}
+    catch (error)
+    {onError}
 }
 
 let markup=''
@@ -73,15 +104,16 @@ function createCard (hits){
   .reduce((markup, hits) => 
 createMarkup(hits) + markup, " ");
 galleryEl.insertAdjacentHTML('beforeend', markup);
+gallery.refresh();
 loadMoreBtn.enable();
 }
 
 
-function createMarkup ({ webformatURL, tags, likes, views, comments, downloads }){
+function createMarkup ({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }){
     return `
 <div class="photo-card">
-  <img src=${webformatURL} alt=${tags} loading="lazy" class="card-img"/>
-  <div class="info">
+<a class='card-img' href=${largeImageURL}><img src=${webformatURL} alt=${tags} loading="lazy" class='img'/></a>
+    <div class="info">
     <p class="info-item">
       <b>Likes <br> ${likes} </b>
     </p>
@@ -103,3 +135,32 @@ function createMarkup ({ webformatURL, tags, likes, views, comments, downloads }
 function clearGallery(){
   galleryEl.innerHTML = '';
 }
+
+
+function onError(err){
+  console.error(err);
+  loadMoreBtn.hide();
+          Notiflix.Notify.info("We're sorry, but you've reached the end of search results.")
+
+
+}
+
+function smoothPageScrolling ()
+{const { height: cardHeight } = document
+  .querySelector(".gallery")
+  .firstElementChild.getBoundingClientRect();
+
+window.scrollBy({
+  top: cardHeight * 2,
+  behavior: "smooth",
+});}
+
+
+
+
+//  if (`(${totalHits.length} - (${hits.length}*${pixApiService.page}))` > 0){
+//         loadMoreBtn.enable()
+//       }
+//       else
+//       {Notiflix.Notify.info("We're sorry, but you've reached the end of search results.")
+//       loadMoreBtn.hide()}
