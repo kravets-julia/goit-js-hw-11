@@ -16,12 +16,12 @@ show(){
 }
 
 disable(){
-    this.button.disable = true;
+    this.button.disabled = true;
 this.button.textContent = "Loading..."
 }
 
 enable(){
-    this.button.disable = false;
+    this.button.disabled = false;
 this.button.textContent = "Load more"
 }
 }
