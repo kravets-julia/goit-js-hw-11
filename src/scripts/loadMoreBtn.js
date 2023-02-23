@@ -14,10 +14,12 @@ hide(){
 show(){
     this.button.classList.remove('hidden')
 }
+
 disable(){
     this.button.disable = true;
 this.button.textContent = "Loading..."
 }
+
 enable(){
     this.button.disable = false;
 this.button.textContent = "Load more"
