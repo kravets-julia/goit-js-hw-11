@@ -62,7 +62,7 @@ img {
 
   .img{
     object-fit: cover;
-    height: 120px;
+    height: 150px;
     width: 100%;
   }
   
@@ -71,6 +71,8 @@ img {
     margin-top: 20px;
     margin-left: auto;
     margin-right: auto;
+    background-color: blue;
+    color: white;
   }
 
   .load-btn{

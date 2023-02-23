@@ -40,3 +40,9 @@ export default class PixApiService{
   
 }
 
+//  if (`(${totalHits.length} - (${hits.length}*${pixApiService.page}))` > 0){
+//         loadMoreBtn.enable()
+//       }
+//       else
+//       {Notiflix.Notify.info("We're sorry, but you've reached the end of search results.")
+//       loadMoreBtn.hide()}

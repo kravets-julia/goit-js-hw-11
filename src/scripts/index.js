@@ -1,14 +1,17 @@
 import PixApiService from "./apiService";
 import LoadMoreBtn from "./loadMoreBtn";
 import Notiflix, {Notify} from "notiflix";
+// import InfiniteScroll from "infinite-scroll";
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 
+
 const formEl = document.getElementById('search-form')
-console.log(formEl)
-console.log(5)
+// console.log(formEl)
+
 const galleryEl = document.querySelector('.gallery')
-console.log(galleryEl)
+// console.log(galleryEl)
+
 // const loadMore = document.querySelector('.load-more')
 // console.log(loadMore)
 
@@ -21,17 +24,15 @@ const loadMoreBtn = new LoadMoreBtn({
 let gallery = new SimpleLightbox('.gallery a', {
  });
 
+// console.log(loadMoreBtn)
 
-
-console.log(loadMoreBtn)
-
-console.log(pixApiService)
+// console.log(pixApiService)
 
 formEl.addEventListener('submit', onSubmtFormSearch)
 loadMoreBtn.button.addEventListener('click', onLoadMore)
 
 
-function onSubmtFormSearch(e) {
+async function onSubmtFormSearch(e) {
 e.preventDefault()
 
     const form = e.currentTarget;
@@ -43,8 +44,8 @@ clearGallery();
 
     if (!value){
       return  }
-
-    return pixApiService.getSearch(value)
+try {
+    return await pixApiService.getSearch(value)
     .then(({hits, totalHits}) => {
       if (hits.length === 0)
       { Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
@@ -55,16 +56,19 @@ clearGallery();
       { newMarkup(hits);
         smoothPageScrolling ();
          Notiflix.Notify.info(`Hooray! We found ${totalHits} images.`)
-        
-        //  if (`${hits.length} * ${pixApiService.page}) === ${totalHits.length}`) 
-         if (`${hits.length}`< 40)
-        {
-          Notiflix.Notify.info("We're sorry, but you've reached the end of search results.")
-          loadMoreBtn.hide();
-        return}
-        else
-          loadMoreBtn.show() }   })
-    .catch(error => console.log(error)).finally(()=> form.reset())
+         let sum = Number(`${hits.length}`)*Number(`${pixApiService.page}`-1)
+      if(sum >= Number(`${totalHits}`))
+            {
+        Notiflix.Notify.info("We're sorry, but you've reached the end of search results.")
+        loadMoreBtn.hide();
+      return}
+      else
+        loadMoreBtn.show() }   })
+        }
+    catch (error) 
+    {console.log(error)}
+   
+finally {form.reset()}
 
   }
 
@@ -75,8 +79,11 @@ async function onLoadMore (){
     .then(({hits, totalHits}) => {
       newMarkup(hits);
       smoothPageScrolling ();
-      if (`${hits.length}`< 40)
-      {
+      let sum = Number(`${hits.length}`)*Number(`${pixApiService.page}`-1)
+      // console.log(sum)
+      // if (`${hits.length}`< 40)
+      if(sum >= Number(`${totalHits}`))
+            {
         Notiflix.Notify.info("We're sorry, but you've reached the end of search results.")
         loadMoreBtn.hide();
       return}
