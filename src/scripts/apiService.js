@@ -1,7 +1,7 @@
 // const BASE_URL = 'https://pixabay.com/api/'
 // const options = {
 //     headers: {
-// 'key': '33829392-49d1eab567acddcf43bdfe9f1'
+// 'API key': '33829392-49d1eab567acddcf43bdfe9f1'
 //     }
 // }
 
