@@ -1,18 +1,26 @@
 import PixApiService from "./apiService";
+import LoadMoreBtn from "./loadMoreBtn";
 import Notiflix, {Notify} from "notiflix";
 
 const formEl = document.getElementById('search-form')
 console.log(formEl)
+console.log(5)
 const galleryEl = document.querySelector('.gallery')
 console.log(galleryEl)
-const loadMore = document.querySelector('.load-more')
-console.log(loadMore)
+// const loadMore = document.querySelector('.load-more')
+// console.log(loadMore)
 
 const pixApiService = new PixApiService();
+const loadMoreBtn = new LoadMoreBtn({
+  selector: '.load-more',
+  isHidden: true
+});
+console.log(loadMoreBtn)
+
 console.log(pixApiService)
 
 formEl.addEventListener('submit', onSubmtFormSearch)
-loadMore.addEventListener('click', onLoadMore)
+loadMoreBtn.button.addEventListener('click', onLoadMore)
 
 
 function onSubmtFormSearch(e) {
@@ -24,7 +32,7 @@ e.preventDefault()
 
 pixApiService. resetPage();
 clearGallery();
-
+loadMoreBtn.show()
     if (!value){
       return
     }
@@ -37,11 +45,15 @@ else
       {newMarkup(hits);
     }})
     .catch(error => console.log(error)).finally(()=> form.reset())
-}
+
+  }
 
 function onLoadMore (){
-  return pixApiService.getSearch()
-    .then(({hits}) => newMarkup(hits))
+  loadMoreBtn.disable()
+  return pixApiService.getSearch(pixApiService.searchQuery)
+    .then(({hits}) => {newMarkup(hits);
+  
+    })
     .catch(error => console.log(error))
 }
 
@@ -61,6 +73,7 @@ function createCard (hits){
   .reduce((markup, hits) => 
 createMarkup(hits) + markup, " ");
 galleryEl.insertAdjacentHTML('beforeend', markup);
+loadMoreBtn.enable();
 }
 
 
