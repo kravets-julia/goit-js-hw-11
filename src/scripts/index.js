@@ -59,7 +59,7 @@ try {
          let sum = Number(`${hits.length}`)*Number(`${pixApiService.page}`-1)
       if(sum >= Number(`${totalHits}`))
             {
-        Notiflix.Notify.info("We're sorry, but you've reached the end of search results.")
+        Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
         loadMoreBtn.hide();
       return}
       else
@@ -88,8 +88,14 @@ async function onLoadMore (){
         loadMoreBtn.hide();
       return}
       else
-        loadMoreBtn.show() ;
+      {  loadMoreBtn.show() ;
   console.log(totalHits);
+  if (hits.length <= 40)
+  {
+    loadMoreBtn.hide()
+  }
+  return
+ }
     })}
     catch (error)
     {onError}
@@ -148,8 +154,6 @@ function onError(err){
   console.error(err);
   loadMoreBtn.hide();
           Notiflix.Notify.info("We're sorry, but you've reached the end of search results.")
-
-
 }
 
 function smoothPageScrolling ()
